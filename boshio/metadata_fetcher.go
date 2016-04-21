@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+type MetadataFetcher interface {
+	Fetch(bosh_file.Release) (ReleaseMetadata, error)
+}
+
 type fetcher struct{}
 
 type ReleaseVersion struct {
@@ -21,11 +25,11 @@ type ReleaseMetadata struct {
 	Versions []ReleaseVersion
 }
 
-func NewMetadataFetcher() fetcher {
-	return fetcher{}
+func NewMetadataFetcher() MetadataFetcher {
+	return &fetcher{}
 }
 
-func (f fetcher) Fetch(release bosh_file.Release) (ReleaseMetadata, error) {
+func (f *fetcher) Fetch(release bosh_file.Release) (ReleaseMetadata, error) {
 	url := fmt.Sprintf("%s/%s/%s", releaseMetadataUrl, release.Repository, release.Name)
 
 	resp, err := http.Get(url)
