@@ -48,6 +48,20 @@ func (m ReleaseMetadata) Version(searchVersion string) (ReleaseVersion, error) {
 	return ReleaseVersion{}, errors.New("version not found")
 }
 
+func (m StemcellMetadata) Latest() StemcellVersion {
+	return m[0]
+}
+
+func (m StemcellMetadata) Version(searchVersion string) (StemcellVersion, error) {
+	for _, version := range m {
+		if version.Version == searchVersion {
+			return version, nil
+		}
+	}
+
+	return StemcellVersion{}, errors.New("version not found")
+}
+
 func (r ReleaseVersion) FileName() string {
 	return fmt.Sprintf("%s-%s.tgz", r.ReleaseName(), r.Version)
 }
@@ -65,6 +79,9 @@ func (s StemcellVersion) FileName() string {
 }
 
 func (s StemcellVersion) Url() string {
+	if s.IsLight() {
+		return s.Light.Url
+	}
 	return s.Regular.Url
 }
 
