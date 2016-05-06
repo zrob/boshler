@@ -10,10 +10,10 @@ import (
 var _ = Describe("Metadata", func() {
 	Describe("ReleaseMetadata", func() {
 		releaseVersion1 := boshio.ReleaseVersion{
-			Version: "0.1.0",
+			Version: "0.33.1",
 		}
 		releaseVersion2 := boshio.ReleaseVersion{
-			Version: "0.1.1",
+			Version: "0.33.0",
 		}
 		releaseVersion3 := boshio.ReleaseVersion{
 			Version: "0.0.1",
@@ -22,15 +22,15 @@ var _ = Describe("Metadata", func() {
 
 		Describe("Latest", func() {
 			It("returns the most recent version", func() {
-				Expect(metadata.Latest()).To(Equal(releaseVersion2))
+				Expect(metadata.Latest()).To(Equal(releaseVersion1))
 			})
 		})
 
 		Describe("Version", func() {
 			It("returns the matching version", func() {
-				version, err := metadata.Version("0.1.1")
+				version, err := metadata.Version("0.33.1")
 				Expect(err).To(BeNil())
-				Expect(version).To(Equal(releaseVersion2))
+				Expect(version).To(Equal(releaseVersion1))
 			})
 		})
 	})

@@ -14,16 +14,9 @@ type ReleaseVersion struct {
 
 type ReleaseMetadata []ReleaseVersion
 
+// lazily assume the boshio api is sorting this, not sure if that is true
 func (m ReleaseMetadata) Latest() ReleaseVersion {
-	var latestVersion ReleaseVersion
-
-	for _, version := range m {
-		if version.Version > latestVersion.Version {
-			latestVersion = version
-		}
-	}
-
-	return latestVersion
+	return m[0]
 }
 
 func (m ReleaseMetadata) Version(searchVersion string) (ReleaseVersion, error) {
