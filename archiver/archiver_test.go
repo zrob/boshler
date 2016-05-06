@@ -45,5 +45,23 @@ var _ = Describe("Archiver", func() {
 			Expect(path).To(BeARegularFile())
 		})
 
+		Context("light stemcell", func() {
+			It("saves the stemcell", func() {
+
+				release := boshio.StemcellVersion{
+					Name:    "stemcell-name",
+					Version: "3147",
+					Light: boshio.StemcellLight{
+						Url: "https://d26ekeud912fhb.cloudfront.net/bosh-stemcell/aws/light-bosh-stemcell-3232.1-aws-xen-hvm-ubuntu-trusty-go_agent.tgz",
+					},
+				}
+
+				path, err := archiver.StoreStemcell(release)
+				Expect(err).To(BeNil())
+
+				Expect(path).To(Equal("/tmp/blah/stemcells/stemcell-name/light-bosh-stemcell-3147-stemcell-name.tgz"))
+				Expect(path).To(BeARegularFile())
+			})
+		})
 	})
 })

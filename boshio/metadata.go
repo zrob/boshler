@@ -24,8 +24,11 @@ type StemcellRegular struct {
 	MD5  string `json:"md5"`
 	Size int    `json:"size"`
 }
-
-type StemcellLight struct{}
+type StemcellLight struct {
+	Url  string `json:"url"`
+	MD5  string `json:"md5"`
+	Size int    `json:"size"`
+}
 
 type ReleaseMetadata []ReleaseVersion
 type StemcellMetadata []StemcellVersion
@@ -54,9 +57,17 @@ func (r ReleaseVersion) ReleaseName() string {
 }
 
 func (s StemcellVersion) FileName() string {
-	return fmt.Sprintf("bosh-stemcell-%s-%s.tgz", s.Version, s.Name)
+	prefix := ""
+	if s.IsLight() {
+		prefix = "light-"
+	}
+	return fmt.Sprintf("%sbosh-stemcell-%s-%s.tgz", prefix, s.Version, s.Name)
 }
 
 func (s StemcellVersion) Url() string {
 	return s.Regular.Url
+}
+
+func (s StemcellVersion) IsLight() bool {
+	return s.Light != StemcellLight{}
 }
