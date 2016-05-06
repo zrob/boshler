@@ -23,7 +23,7 @@ func NewArchiver(storePath string) Archiver {
 }
 
 func (a *archiver) Store(release boshio.ReleaseVersion) (string, error) {
-	downloader := boshio.NewReleaseDownloader()
+	downloader := boshio.NewDownloader()
 
 	releaseDir := filepath.Join(a.storePath, release.ReleaseName())
 	targetFile := filepath.Join(releaseDir, release.FileName())
@@ -40,7 +40,7 @@ func (a *archiver) Store(release boshio.ReleaseVersion) (string, error) {
 	}
 
 	fmt.Printf("Downloading %s %s\n", release.ReleaseName(), release.Version)
-	err = downloader.Download(release, targetFile)
+	err = downloader.Download(release.Url, targetFile)
 	if err != nil {
 		return "", err
 	}

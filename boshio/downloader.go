@@ -6,24 +6,24 @@ import (
 	"os"
 )
 
-type ReleaseDownloader interface {
-	Download(ReleaseVersion, string) error
+type Downloader interface {
+	Download(string, string) error
 }
 
 type downloader struct{}
 
-func NewReleaseDownloader() ReleaseDownloader {
+func NewDownloader() Downloader {
 	return &downloader{}
 }
 
-func (d *downloader) Download(release ReleaseVersion, targetFile string) error {
+func (d *downloader) Download(url string, targetFile string) error {
 	out, err := os.Create(targetFile)
 	if err != nil {
 		return err
 	}
 	defer out.Close()
 
-	resp, err := http.Get(release.Url)
+	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
