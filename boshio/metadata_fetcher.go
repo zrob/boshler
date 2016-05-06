@@ -21,9 +21,7 @@ type ReleaseVersion struct {
 
 const releaseMetadataUrl = "https://bosh.io/api/v1/releases/github.com"
 
-type ReleaseMetadata struct {
-	Versions []ReleaseVersion
-}
+type ReleaseMetadata []ReleaseVersion
 
 func NewMetadataFetcher() MetadataFetcher {
 	return &fetcher{}

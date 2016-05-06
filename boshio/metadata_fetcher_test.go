@@ -23,7 +23,7 @@ var _ = Describe("MetadataFetcher", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(releaseMetadata).To(HaveLen(1))
 
-			releaseVersion := releaseMetadata.Versions[0]
+			releaseVersion := releaseMetadata[0]
 			Expect(releaseVersion.Name).To(Equal("github.com/cloudfoundry-community/ntp-release"))
 			Expect(releaseVersion.Version).To(Equal("2"))
 			Expect(releaseVersion.Url).To(Equal("https://bosh.io/d/github.com/cloudfoundry-community/ntp-release?v=2"))
