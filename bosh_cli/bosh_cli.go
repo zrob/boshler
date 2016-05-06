@@ -2,8 +2,17 @@ package bosh_cli
 
 import "os/exec"
 
-func UploadRelease(releasePath string) error {
-	cmd := exec.Command("bosh", "upload", "release", releasePath)
+func UploadRelease(path string) error {
+	cmd := exec.Command("bosh", "upload", "release", path)
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UploadStemcell(path string) error {
+	cmd := exec.Command("bosh", "upload", "stemcell", path)
 	err := cmd.Run()
 	if err != nil {
 		return err
