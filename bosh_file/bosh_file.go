@@ -11,8 +11,14 @@ type Release struct {
 	Version    string `json:"version"`
 }
 
+type Stemcell struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
 type BoshFile struct {
-	Releases []Release `json:"releases"`
+	Releases  []Release  `json:"releases"`
+	Stemcells []Stemcell `json:"stemcells"`
 }
 
 func ParseFile(filePath string) (BoshFile, error) {

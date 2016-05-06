@@ -25,6 +25,12 @@ var _ = Describe("BoshFile", func() {
 						"repository": "release-repository",
 						"version": "1.2.3"
 					}
+				],
+				"stemcells": [
+					{
+						"name": "stemcell-name",
+						"version": "4.5.6"
+					}
 				]
 			}
 			`)
@@ -50,6 +56,10 @@ var _ = Describe("BoshFile", func() {
 			Expect(release.Name).To(Equal("release-name"))
 			Expect(release.Repository).To(Equal("release-repository"))
 			Expect(release.Version).To(Equal("1.2.3"))
+
+			stemcell := boshfile.Stemcells[0]
+			Expect(stemcell.Name).To(Equal("stemcell-name"))
+			Expect(stemcell.Version).To(Equal("4.5.6"))
 		})
 
 	})
