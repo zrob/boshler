@@ -11,14 +11,14 @@ import (
 var _ = Describe("MetadataFetcher", func() {
 	fetcher := boshio.NewMetadataFetcher()
 
-	Describe("Fetch", func() {
+	Describe("FetchRelease", func() {
 		It("fetches release metadata", func() {
 			release := bosh_file.Release{
 				Name:       "ntp-release",
 				Repository: "cloudfoundry-community",
 			}
 
-			releaseMetadata, err := fetcher.Fetch(release)
+			releaseMetadata, err := fetcher.FetchRelease(release)
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(releaseMetadata).To(HaveLen(1))
@@ -27,6 +27,19 @@ var _ = Describe("MetadataFetcher", func() {
 			Expect(releaseVersion.Name).To(Equal("github.com/cloudfoundry-community/ntp-release"))
 			Expect(releaseVersion.Version).To(Equal("2"))
 			Expect(releaseVersion.Url).To(Equal("https://bosh.io/d/github.com/cloudfoundry-community/ntp-release?v=2"))
+		})
+	})
+
+	Describe("FetchStemcell", func() {
+		It("fetches stemcell metadata", func() {
+			stemcellMetadata, err := fetcher.FetchStemcell("bosh-warden-boshlite-ubuntu-trusty-go_agent")
+
+			Expect(err).ToNot(HaveOccurred())
+
+			stemcellVersion := stemcellMetadata[0]
+			Expect(stemcellVersion.Name).To(Equal("bosh-warden-boshlite-ubuntu-trusty-go_agent"))
+			Expect(stemcellVersion.Version).ToNot(BeEmpty())
+			Expect(stemcellVersion.Regular.Url).ToNot(BeEmpty())
 		})
 	})
 })

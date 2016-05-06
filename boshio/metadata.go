@@ -12,7 +12,23 @@ type ReleaseVersion struct {
 	Url     string `json:"url"`
 }
 
+type StemcellVersion struct {
+	Name    string          `json:"name"`
+	Version string          `json:"version"`
+	Regular StemcellRegular `json:"regular"`
+	Light   StemcellLight   `json:"light"`
+}
+
+type StemcellRegular struct {
+	Url  string `json:"url"`
+	MD5  string `json:"md5"`
+	Size int    `json:"size"`
+}
+
+type StemcellLight struct{}
+
 type ReleaseMetadata []ReleaseVersion
+type StemcellMetadata []StemcellVersion
 
 // lazily assume the boshio api is sorting this, not sure if that is true
 func (m ReleaseMetadata) Latest() ReleaseVersion {

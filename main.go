@@ -35,7 +35,7 @@ func cacheAndUploadRelease(release bosh_file.Release, archiveDir string) {
 	fetcher := boshio.NewMetadataFetcher()
 	archiver := archiver.NewArchiver(archiveDir)
 
-	metadata, err := fetcher.Fetch(release)
+	metadata, err := fetcher.FetchRelease(release)
 	if err != nil {
 		panic(err.Error())
 	}
