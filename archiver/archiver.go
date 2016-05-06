@@ -9,7 +9,7 @@ import (
 )
 
 type Archiver interface {
-	Store(boshio.ReleaseVersion) error
+	Store(boshio.ReleaseVersion) (string, error)
 }
 
 type archiver struct {
@@ -22,7 +22,7 @@ func NewArchiver(storePath string) Archiver {
 	}
 }
 
-func (a *archiver) Store(release boshio.ReleaseVersion) error {
+func (a *archiver) Store(release boshio.ReleaseVersion) (string, error) {
 	downloader := boshio.NewReleaseDownloader()
 
 	releaseDir := filepath.Join(a.storePath, release.ReleaseName())
@@ -30,7 +30,7 @@ func (a *archiver) Store(release boshio.ReleaseVersion) error {
 
 	if _, err := os.Stat(targetFile); err == nil {
 		fmt.Printf("Using %s.\n", release.FileName())
-		return nil
+		return targetFile, nil
 	}
 
 	os.MkdirAll(releaseDir, os.ModePerm)
@@ -38,9 +38,9 @@ func (a *archiver) Store(release boshio.ReleaseVersion) error {
 	fmt.Printf("Downloading %s...\n", release.FileName())
 	err := downloader.Download(release, targetFile)
 	if err != nil {
-		return err
+		return "", err
 	}
 	fmt.Printf("Done downloading %s.\n", release.FileName())
 
-	return nil
+	return targetFile, nil
 }

@@ -19,10 +19,11 @@ var _ = Describe("Archiver", func() {
 				Url:     "https://bosh.io/d/github.com/cloudfoundry-community/ntp-release?v=2",
 			}
 
-			err := archiver.Store(release)
+			path, err := archiver.Store(release)
 			Expect(err).To(BeNil())
 
-			Expect("/tmp/blah/ntp-release/ntp-release-2.tgz").To((BeARegularFile()))
+			Expect(path).To(Equal("/tmp/blah/ntp-release/ntp-release-2.tgz"))
+			Expect(path).To(BeARegularFile())
 		})
 
 	})
