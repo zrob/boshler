@@ -29,4 +29,22 @@ var _ = Describe("MetadataFetcher", func() {
 			Expect(releaseVersion.Url).To(Equal("https://bosh.io/d/github.com/cloudfoundry-community/ntp-release?v=2"))
 		})
 	})
+
+	Describe("Latest", func() {
+		It("returns the most recent version", func() {
+			releaseVersion1 := boshio.ReleaseVersion{
+				Version: "0.1.0",
+			}
+			releaseVersion2 := boshio.ReleaseVersion{
+				Version: "0.1.1",
+			}
+			releaseVersion3 := boshio.ReleaseVersion{
+				Version: "0.0.1",
+			}
+
+			metadata := boshio.ReleaseMetadata{releaseVersion1, releaseVersion2, releaseVersion3}
+
+			Expect(metadata.Latest).To(Equal(releaseVersion2))
+		})
+	})
 })

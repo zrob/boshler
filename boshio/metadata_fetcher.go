@@ -30,7 +30,7 @@ func NewMetadataFetcher() MetadataFetcher {
 
 func (f *fetcher) Fetch(release bosh_file.Release) (ReleaseMetadata, error) {
 	url := fmt.Sprintf("%s/%s/%s", releaseMetadataUrl, release.Repository, release.Name)
-
+	println(url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return ReleaseMetadata{}, err
@@ -44,4 +44,10 @@ func (f *fetcher) Fetch(release bosh_file.Release) (ReleaseMetadata, error) {
 	}
 
 	return metadata, nil
+}
+
+func (m ReleaseMetadata) Latest() ReleaseVersion {
+	
+
+	return ReleaseVersion{}
 }
