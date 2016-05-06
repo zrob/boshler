@@ -53,7 +53,7 @@ func cacheAndUploadRelease(release bosh_file.Release, archiveDir string) {
 		println(err.Error())
 		panic(err.Error())
 	}
-	fmt.Printf("Done uploading %s %s\n", releaseVersion.ReleaseName(), releaseVersion.Version)
+	fmt.Printf("\x1b[32;1mDone uploading %s %s\x1b[0m\n", releaseVersion.ReleaseName(), releaseVersion.Version)
 }
 
 func selectReleaseVersion(release bosh_file.Release, metadata boshio.ReleaseMetadata) boshio.ReleaseVersion {
