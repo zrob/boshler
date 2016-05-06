@@ -12,7 +12,7 @@ func UploadRelease(path string) error {
 }
 
 func UploadStemcell(path string) error {
-	cmd := exec.Command("bosh", "upload", "stemcell", path)
+	cmd := exec.Command("bosh", "upload", "stemcell", "--skip-if-exists", path)
 	err := cmd.Run()
 	if err != nil {
 		return err
