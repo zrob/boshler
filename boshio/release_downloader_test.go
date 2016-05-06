@@ -28,11 +28,12 @@ var _ = Describe("ReleaseDownloader", func() {
 				Version: "2",
 				Url:     "https://bosh.io/d/github.com/cloudfoundry-community/ntp-release?v=2",
 			}
+			targetFile := filepath.Join(tempdir, release.FileName())
 
-			err := releaseDownloader.Download(release, tempdir)
+			err := releaseDownloader.Download(release, targetFile)
 			Expect(err).To(BeNil())
 
-			Expect(filepath.Join(tempdir, "ntp-release-2.tgz")).To(BeAnExistingFile())
+			Expect(targetFile).To(BeAnExistingFile())
 		})
 	})
 })

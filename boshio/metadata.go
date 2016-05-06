@@ -1,6 +1,10 @@
 package boshio
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"path/filepath"
+)
 
 type ReleaseVersion struct {
 	Name    string `json:"name"`
@@ -30,4 +34,12 @@ func (m ReleaseMetadata) Version(searchVersion string) (ReleaseVersion, error) {
 	}
 
 	return ReleaseVersion{}, errors.New("version not found")
+}
+
+func (r ReleaseVersion) FileName() string {
+	return fmt.Sprintf("%s-%s.tgz", r.ReleaseName(), r.Version)
+}
+
+func (r ReleaseVersion) ReleaseName() string {
+	return filepath.Base(r.Name)
 }

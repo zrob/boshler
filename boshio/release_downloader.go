@@ -1,11 +1,9 @@
 package boshio
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 )
 
 type ReleaseDownloader interface {
@@ -18,11 +16,8 @@ func NewReleaseDownloader() ReleaseDownloader {
 	return &downloader{}
 }
 
-func (d *downloader) Download(release ReleaseVersion, targetDir string) error {
-	fileName := fmt.Sprintf("%s-%s.tgz", filepath.Base(release.Name), release.Version)
-	fullPath := filepath.Join(targetDir, fileName)
-
-	out, err := os.Create(fullPath)
+func (d *downloader) Download(release ReleaseVersion, targetFile string) error {
+	out, err := os.Create(targetFile)
 	if err != nil {
 		return err
 	}
