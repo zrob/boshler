@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os/user"
+	"path/filepath"
 	"sync"
 
 	"github.com/zrob/boshler/archiver"
@@ -22,13 +24,19 @@ func main() {
 	}
 	fmt.Println(target)
 
+	usr, err := user.Current()
+	if err != nil {
+		panic(err.Error())
+	}
+	archiveDir := filepath.Join(usr.HomeDir, ".boshler", "releases")
+
 	var wg sync.WaitGroup
 	wg.Add(len(boshfile.Releases))
 
 	for _, release := range boshfile.Releases {
 		go func(release bosh_file.Release) {
 			fetcher := boshio.NewMetadataFetcher()
-			archiver := archiver.NewArchiver("/tmp/blah")
+			archiver := archiver.NewArchiver(archiveDir)
 
 			metadata, err := fetcher.Fetch(release)
 			if err != nil {
