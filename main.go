@@ -42,7 +42,7 @@ func cacheAndUploadRelease(release bosh_file.Release, archiveDir string) {
 
 	releaseVersion := selectReleaseVersion(release, metadata)
 
-	path, err := archiver.Store(releaseVersion)
+	path, err := archiver.StoreRelease(releaseVersion)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -93,5 +93,5 @@ func getArchiveDir() string {
 	if err != nil {
 		panic(err.Error())
 	}
-	return filepath.Join(usr.HomeDir, ".boshler", "releases")
+	return filepath.Join(usr.HomeDir, ".boshler")
 }

@@ -52,3 +52,11 @@ func (r ReleaseVersion) FileName() string {
 func (r ReleaseVersion) ReleaseName() string {
 	return filepath.Base(r.Name)
 }
+
+func (s StemcellVersion) FileName() string {
+	return fmt.Sprintf("bosh-stemcell-%s-%s.tgz", s.Version, s.Name)
+}
+
+func (s StemcellVersion) Url() string {
+	return s.Regular.Url
+}
