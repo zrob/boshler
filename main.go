@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/zrob/boshler/archiver"
+	"github.com/zrob/boshler/bosh_cli"
 	"github.com/zrob/boshler/bosh_file"
 	"github.com/zrob/boshler/boshio"
-	"github.com/zrob/boshler/bosh_cli"
 )
 
 func main() {
@@ -14,6 +15,12 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	target, err := bosh_cli.GetTarget()
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println(target)
 
 	var wg sync.WaitGroup
 	wg.Add(len(boshfile.Releases))

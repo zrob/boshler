@@ -15,3 +15,12 @@ func UploadRelease(releasePath string) error {
 	fmt.Printf("Done uploading release %s.\n", releasePath)
 	return nil
 }
+
+func GetTarget() (string, error) {
+	cmd := exec.Command("bosh", "target")
+	output, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
+}
