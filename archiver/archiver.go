@@ -28,19 +28,23 @@ func (a *archiver) Store(release boshio.ReleaseVersion) (string, error) {
 	releaseDir := filepath.Join(a.storePath, release.ReleaseName())
 	targetFile := filepath.Join(releaseDir, release.FileName())
 
-	if _, err := os.Stat(targetFile); err == nil {
-		fmt.Printf("Using %s.\n", release.FileName())
+	_, err := os.Stat(targetFile)
+	if err == nil {
+		fmt.Printf("Using %s %s\n", release.ReleaseName(), release.Version)
 		return targetFile, nil
 	}
 
-	os.MkdirAll(releaseDir, os.ModePerm)
-
-	fmt.Printf("Downloading %s...\n", release.FileName())
-	err := downloader.Download(release, targetFile)
+	err = os.MkdirAll(releaseDir, os.ModePerm)
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Done downloading %s.\n", release.FileName())
+
+	fmt.Printf("Downloading %s %s\n", release.ReleaseName(), release.Version)
+	err = downloader.Download(release, targetFile)
+	if err != nil {
+		return "", err
+	}
+	fmt.Printf("Done downloading %s %s\n", release.ReleaseName(), release.Version)
 
 	return targetFile, nil
 }

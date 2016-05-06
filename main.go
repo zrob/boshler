@@ -23,6 +23,7 @@ func main() {
 	for _, release := range boshfile.Releases {
 		go func(release bosh_file.Release) {
 			defer wg.Done()
+
 			cacheAndUploadRelease(release, archiveDir)
 		}(release)
 	}
@@ -39,26 +40,36 @@ func cacheAndUploadRelease(release bosh_file.Release, archiveDir string) {
 		panic(err.Error())
 	}
 
-	var releaseVersion boshio.ReleaseVersion
-	if release.Version == "" {
-		releaseVersion = metadata.Latest()
-	} else {
-		releaseVersion, err = metadata.Version(release.Version)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
+	releaseVersion := selectReleaseVersion(release, metadata)
 
 	path, err := archiver.Store(releaseVersion)
 	if err != nil {
 		panic(err.Error())
 	}
 
+	fmt.Printf("Uploading %s %s\n", releaseVersion.ReleaseName(), releaseVersion.Version)
 	err = bosh_cli.UploadRelease(path)
 	if err != nil {
 		println(err.Error())
 		panic(err.Error())
 	}
+	fmt.Printf("Done uploading %s %s\n", releaseVersion.ReleaseName(), releaseVersion.Version)
+}
+
+func selectReleaseVersion(release bosh_file.Release, metadata boshio.ReleaseMetadata) boshio.ReleaseVersion {
+	var releaseVersion boshio.ReleaseVersion
+
+	if release.Version == "" {
+		releaseVersion = metadata.Latest()
+	} else {
+		var err error
+		releaseVersion, err = metadata.Version(release.Version)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	return releaseVersion
 }
 
 func displayCurrentTarget() {
