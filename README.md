@@ -29,7 +29,7 @@ boshler
     {
       "name": "etcd-release",
       "repository": "cloudfoundry-incubator",
-      "version": 44
+      "version": "44"
     },
     {
       "name": "cflinuxfs2-rootfs-release",
