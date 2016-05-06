@@ -3,8 +3,9 @@ package boshio
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/zrob/boshler/bosh_file"
 	"net/http"
+
+	"github.com/zrob/boshler/bosh_file"
 )
 
 type MetadataFetcher interface {
