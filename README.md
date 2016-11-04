@@ -23,13 +23,12 @@ boshler
 {
   "releases": [
     {
-      "name": "garden-linux-release",
-      "repository": "cloudfoundry-incubator"
+      "name": "garden-runc-release",
+      "repository": "cloudfoundry"
     },
     {
       "name": "etcd-release",
-      "repository": "cloudfoundry-incubator",
-      "version": "44"
+      "repository": "cloudfoundry-incubator"
     },
     {
       "name": "cflinuxfs2-rootfs-release",
