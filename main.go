@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/zrob/boshler/archiver"
@@ -131,6 +133,10 @@ func displayCurrentTarget() {
 
 func parseBoshFile() bosh_file.BoshFile {
 	boshfile, err := bosh_file.ParseFile("BOSHFILE")
+	if strings.Contains(err.Error(), "no such file") {
+		fmt.Println("Cannot find BOSHFILE. Are you sure you have it in your working directory?")
+		os.Exit(1)
+	}
 	if err != nil {
 		panic(err.Error())
 	}
