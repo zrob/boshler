@@ -31,7 +31,7 @@ boshler
       "repository": "cloudfoundry-incubator"
     },
     {
-      "name": "cflinuxfs2-release",
+      "name": "cflinuxfs2-rootfs-release",
       "repository": "cloudfoundry"
     }
   ]
