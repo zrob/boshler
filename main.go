@@ -12,23 +12,29 @@ import (
 	"github.com/zrob/boshler/bosh_cli"
 	"github.com/zrob/boshler/bosh_file"
 	"github.com/zrob/boshler/boshio"
+	"github.com/zrob/boshler/work_pool"
 )
 
 func main() {
 	boshfile := parseBoshFile()
 	displayCurrentTarget()
 	archiveDir := getArchiveDir()
+	downloadPool := work_pool.NewWorkPool(10)
+	uploadPool := work_pool.NewWorkPool(5)
 
-	var wg sync.WaitGroup
-	wg.Add(len(boshfile.Releases) + len(boshfile.Stemcells))
+	downloadPool.Start()
+	uploadPool.Start()
 
 	for _, release := range boshfile.Releases {
-		go func(release bosh_file.Release) {
-			defer wg.Done()
-
-			cacheAndUploadRelease(release, archiveDir)
+		func(release bosh_file.Release) {
+			downloadPool.Submit(func() {
+				cacheAndUploadRelease(release, archiveDir, uploadPool)
+			})
 		}(release)
 	}
+
+	var wg sync.WaitGroup
+	wg.Add(len(boshfile.Stemcells))
 
 	for _, stemcell := range boshfile.Stemcells {
 		go func(stemcell bosh_file.Stemcell) {
@@ -39,14 +45,18 @@ func main() {
 	}
 
 	wg.Wait()
+
+	downloadPool.Stop()
+	uploadPool.Stop()
 }
 
-func cacheAndUploadRelease(release bosh_file.Release, archiveDir string) {
+func cacheAndUploadRelease(release bosh_file.Release, archiveDir string, pool work_pool.WorkPool) {
 	fetcher := boshio.NewMetadataFetcher()
 	archiver := archiver.NewArchiver(archiveDir)
 
 	metadata, err := fetcher.FetchRelease(release)
 	if err != nil {
+		fmt.Printf("%v", release)
 		panic(err.Error())
 	}
 
@@ -57,13 +67,15 @@ func cacheAndUploadRelease(release bosh_file.Release, archiveDir string) {
 		panic(err.Error())
 	}
 
-	fmt.Printf("Uploading %s %s\n", releaseVersion.ReleaseName(), releaseVersion.Version)
-	err = bosh_cli.UploadRelease(path)
-	if err != nil {
-		println(err.Error())
-		panic(err.Error())
-	}
-	fmt.Printf("\x1b[32;1mDone uploading %s %s\x1b[0m\n", releaseVersion.ReleaseName(), releaseVersion.Version)
+	pool.Submit(func() {
+		fmt.Printf("Uploading %s %s\n", releaseVersion.ReleaseName(), releaseVersion.Version)
+		err := bosh_cli.UploadRelease(path)
+		if err != nil {
+			println(err.Error())
+			panic(err.Error())
+		}
+		fmt.Printf("\x1b[32;1mDone uploading %s %s\x1b[0m\n", releaseVersion.ReleaseName(), releaseVersion.Version)
+	})
 }
 
 func cacheAndUploadStemcell(stemcell bosh_file.Stemcell, archiveDir string) {
@@ -100,6 +112,7 @@ func selectReleaseVersion(release bosh_file.Release, metadata boshio.ReleaseMeta
 		var err error
 		releaseVersion, err = metadata.Version(release.Version)
 		if err != nil {
+			fmt.Printf("%v", release)
 			panic(err.Error())
 		}
 	}
