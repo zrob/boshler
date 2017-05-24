@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/zrob/boshler/archiver"
@@ -13,10 +12,11 @@ import (
 	"github.com/zrob/boshler/bosh_file"
 	"github.com/zrob/boshler/boshio"
 	"github.com/zrob/boshler/work_pool"
+	"github.com/zrob/boshler/bosh_manifest"
 )
 
 func main() {
-	boshfile := parseBoshFile()
+	boshfile := getBoshFile()
 	displayCurrentTarget()
 	archiveDir := getArchiveDir()
 	downloadPool := work_pool.NewWorkPool(10)
@@ -144,16 +144,23 @@ func displayCurrentTarget() {
 	fmt.Println(target)
 }
 
-func parseBoshFile() bosh_file.BoshFile {
-	boshfile, err := bosh_file.ParseFile("BOSHFILE")
-	if err != nil {
-		if strings.Contains(err.Error(), "no such file") {
-			fmt.Println("Cannot find BOSHFILE. Are you sure you have it in your working directory?")
-			os.Exit(1)
-		} else {
-			panic(err.Error())
-		}
+func getBoshFile() bosh_file.BoshFile {
+	var boshfile bosh_file.BoshFile
+	var err error
+
+	if _, err := os.Stat("BOSHFILE"); err == nil {
+		boshfile, err = bosh_file.ParseFile("BOSHFILE")
+	} else if _, err := os.Stat("cf-deployment.yml"); err == nil {
+		boshfile, err = bosh_manifest.ParseFile("cf-deployment.yml")
+	} else {
+		fmt.Println("Cannot find BOSHFILE. Are you sure you have it in your working directory?")
+		os.Exit(1)
 	}
+
+	if err != nil {
+		panic(err.Error())
+	}
+
 	return boshfile
 }
 
